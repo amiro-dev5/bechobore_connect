@@ -26,8 +26,7 @@ SECRET_KEY = 'django-insecure-oc8d1=lz($m*f$nnx2f&fg-hh=hpx#j3rbe5j51z$r#k%49582
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# settings.py
-ALLOWED_HOSTS = ['bechobore-connect.onrender.com.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
