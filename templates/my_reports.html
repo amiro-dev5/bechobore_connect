@@ -23,48 +23,41 @@
     <div class="bg-slate-950/40 border border-slate-800/80 rounded-2xl overflow-hidden shadow-2xl">
         
         {% if reports %}
-            <!-- 🖥️ DESKTOP TABLE VIEW (Hidden on Mobile) -->
+            <!-- 🖥️ DESKTOP TABLE VIEW (Clean and Focused) -->
             <div class="hidden md:block overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-slate-950/80 border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider font-semibold">
-                            <th class="px-6 py-4">Issue Details</th>
-                            <th class="px-6 py-4">Category</th>
-                            <th class="px-6 py-4">Date Logged</th>
-                            <th class="px-6 py-4">Status</th>
-                            <th class="px-6 py-4 text-right">Action</th>
+                            <th class="px-6 py-4 w-1/6">Ticket</th>
+                            <th class="px-6 py-4 w-3/6">Message</th>
+                            <th class="px-6 py-4 w-1/6">Category</th>
+                            <th class="px-6 py-4 w-1/6">Status</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-800/60 text-sm">
                         {% for report in reports %}
                             <tr class="hover:bg-slate-900/40 transition">
-                                <td class="px-6 py-4">
-                                    <div class="font-bold text-white max-w-xs truncate">
-                                        {{ report.title|default:"Ticket" }} #BC-{{ report.id }}
-                                    </div>
-                                    <div class="text-xs text-slate-400 mt-0.5 max-w-xs truncate">
-                                        {{ report.description }}
-                                    </div>
+                                <!-- TICKET -->
+                                <td class="px-6 py-4 font-bold text-white whitespace-nowrap">
+                                    #BC-{{ report.id }}
                                 </td>
-                                <td class="px-6 py-4">
+                                <!-- MESSAGE -->
+                                <td class="px-6 py-4 text-slate-300 max-w-md break-words">
+                                    {{ report.description }}
+                                </td>
+                                <!-- CATEGORY -->
+                                <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-800 border border-slate-700 text-slate-300">
                                         {{ report.get_issue_type_display|default:report.issue_type|title }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 text-slate-400 text-xs">
-                                    {{ report.created_at|date:"M d, Y"|default:"Recently" }}
-                                </td>
-                                <td class="px-6 py-4">
-                                    {% if report.status == 'in_progress' %}
-                                        <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-bold rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">In Progress</span>
-                                    {% elif report.status == 'resolved' %}
+                                <!-- STATUS (Auto-updated based on is_resolved) -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    {% if report.is_resolved %}
                                         <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-bold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Resolved</span>
                                     {% else %}
                                         <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-bold rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">Pending</span>
                                     {% endif %}
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <a href="#" class="text-xs font-bold text-teal-400 hover:text-teal-300 transition">View &rarr;</a>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -72,34 +65,30 @@
                 </table>
             </div>
 
-            <!-- 📱 MOBILE CARD VIEW (Hidden on Desktop) -->
+            <!-- 📱 MOBILE CARD VIEW (Clean and Focused) -->
             <div class="block md:hidden p-4 space-y-4">
                 {% for report in reports %}
                     <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 space-y-3 shadow-md">
                         <div class="flex items-start justify-between gap-2">
                             <div>
                                 <h4 class="font-bold text-white text-base">
-                                    {{ report.title|default:"Ticket" }} #BC-{{ report.id }}
+                                    #BC-{{ report.id }}
                                 </h4>
-                                <p class="text-xs text-slate-400 mt-1 line-clamp-2">{{ report.description }}</p>
+                                <p class="text-xs text-slate-300 mt-1 break-words">{{ report.description }}</p>
                             </div>
-                            {% if report.status == 'in_progress' %}
-                                <span class="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 whitespace-nowrap">In Progress</span>
-                            {% elif report.status == 'resolved' %}
+                            
+                            <!-- Mobile Status -->
+                            {% if report.is_resolved %}
                                 <span class="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 whitespace-nowrap">Resolved</span>
                             {% else %}
                                 <span class="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 whitespace-nowrap">Pending</span>
                             {% endif %}
                         </div>
                         
-                        <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800/60">
-                            <div>
-                                <span class="bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-[11px] text-slate-300 mr-2">
-                                    {{ report.get_issue_type_display|default:report.issue_type|title }}
-                                </span>
-                                <span>{{ report.created_at|date:"M d"|default:"Now" }}</span>
-                            </div>
-                            <a href="#" class="text-xs font-bold text-teal-400 hover:underline">View &rarr;</a>
+                        <div class="pt-2 border-t border-slate-800/60">
+                            <span class="bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-[11px] text-slate-300">
+                                {{ report.get_issue_type_display|default:report.issue_type|title }}
+                            </span>
                         </div>
                     </div>
                 {% endfor %}

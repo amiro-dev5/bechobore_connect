@@ -7,6 +7,7 @@ import json
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Count
+from django.db.models import Q
 
 def home(request):
     # ተጠቃሚው ቀድሞ Log In ካደረገ በቀጥታ ወደ ሚናው ዳሽቦርድ ይመራዋል
@@ -71,11 +72,25 @@ def dashboard_redirect(request):
 
 @login_required
 def resident_dashboard(request):
-    # ነዋሪ ካልሆነ ወደ አድሚን ዳሽቦርድ ይመልሰዋል (ደህንነትን ለመጠበቅ)
     if request.user.role != 'resident':
         return redirect('admin_dashboard')
-    return render(request, 'resident_dashboard.html')
-
+    
+    # በ 'is_resolved' ፊልድ ላይ ተመስርቶ በብቃት መቁጠር
+    report_stats = IssueReport.objects.filter(user=request.user).aggregate(
+        total=Count('id'),
+        resolved=Count('id', filter=Q(is_resolved=True)),
+        pending=Count('id', filter=Q(is_resolved=False))
+    )
+    
+    # የመጨረሻዋን ሪፖርት ማምጣት
+    latest_report = IssueReport.objects.filter(user=request.user).order_by('-created_at').first()
+    
+    context = {
+        'stats': report_stats,
+        'latest_report': latest_report,
+    }
+    
+    return render(request, 'resident_dashboard.html', context)
 @login_required
 def admin_dashboard(request):
     if request.user.role != 'kebele_admin':
@@ -201,3 +216,87 @@ def my_reports(request):
     user_reports = IssueReport.objects.filter(user=request.user).order_by('-id')
     
     return render(request, 'my_reports.html', {'reports': user_reports})
+
+@login_required
+def manage_reports(request):
+    # 🛡️ የደህንነት ጥበቃ፡ የገባው ተጠቃሚ 'kebele_admin' ካልሆነ ወደ ነዋሪው ዳሽቦርድ ይመልሰዋል
+    if request.user.role != 'kebele_admin':
+        return redirect('resident_dashboard')
+
+    # 📥 አድሚኑ የሪፖርቱን ሁኔታ ሲቀይር (POST Request)
+    if request.method == 'POST':
+        report_id = request.POST.get('report_id')
+        status_update = request.POST.get('status_update')
+        
+        try:
+            # ሪፖርቱን ከዳታቤዝ መፈለግ
+            report = IssueReport.objects.get(id=report_id)
+            
+            # በአድሚኑ ምርጫ መሰረት ሁኔታውን ማሻሻል
+            if status_update == 'resolved':
+                report.is_resolved = True
+            else:
+                report.is_resolved = False
+                
+            report.save()  # በዳታቤዝ ደረጃ ሴቭ ማድረግ
+            messages.success(request, f"Ticket #BC-{report.id} status updated successfully!")
+            
+        except IssueReport.DoesNotExist:
+            messages.error(request, "The requested report was not found.")
+            
+        return redirect('manage_reports')  # ገጹን በነበረበት ማደስ (Refresh)
+
+    # 📋 ገጹ በኖርማል ሲከፈት (GET Request) ሁሉንም ሪፖርቶች አዲስ ከባለ በቅደም ተከተል ማምጣት
+    # አዳዲሶቹ ሁልጊዜ ከላይ እንዲመጡ .order_by('-created_at') ተጠቅመናል
+    reports = IssueReport.objects.all().order_by('-created_at')
+    
+    context = {
+        'reports': reports
+    }
+    return render(request, 'manage_reports.html', context)
+
+@login_required
+def manage_users(request):
+    # Security Lock: Only allow kebele_admin to access this view
+    if request.user.role != 'kebele_admin':
+        return redirect('resident_dashboard')
+
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        action = request.POST.get('action')
+        
+        try:
+            target_user = CustomUser.objects.get(id=user_id)
+
+            # Prevent administrative self-lockouts or self-deletion
+            if target_user.id == request.user.id:
+                messages.error(request, "You cannot modify or delete your own active administrative account.")
+                return redirect('manage_users')
+
+            # Handle Role Update Action
+            if action == 'update_role':
+                assigned_role = request.POST.get('assigned_role')
+                if assigned_role == 'admin':
+                    target_user.role = 'kebele_admin'
+                elif assigned_role == 'resident':
+                    target_user.role = 'resident'
+                target_user.save()
+                messages.success(request, f"Roles updated successfully for {target_user.username}.")
+
+            # Handle User Deletion Action
+            elif action == 'delete_user':
+                username = target_user.username
+                target_user.delete()
+                messages.success(request, f"Account profile for {username} has been permanently deleted.")
+
+        except CustomUser.DoesNotExist:
+            messages.error(request, "The requested user profile was not found.")
+
+        return redirect('manage_users')
+
+    # GET Request: Fetch all accounts except system superusers, ordered by ID
+    users = CustomUser.objects.all().order_by('-id')
+    context = {
+        'users': users
+    }
+    return render(request, 'manage_users.html', context)

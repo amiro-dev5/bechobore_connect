@@ -10,4 +10,6 @@ urlpatterns = [
     path('admin-portal/', views.admin_dashboard, name='admin_dashboard'),
     path('report-issue/', views.report_issue, name='report_issue'),
     path('my-reports/', views.my_reports, name='my_reports'),
+    path('admin-dashboard/reports/', views.manage_reports, name='manage_reports'),
+    path('admin-panel/users/', views.manage_users, name='manage_users'),
 ]

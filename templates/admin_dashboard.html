@@ -32,7 +32,7 @@
         <p class="text-2xl sm:text-3xl font-black text-emerald-400 mt-1">{{ resolved_this_week_count }}</p>
         <span class="text-[11px] text-slate-400 mt-1 block">Successfully closed</span>
     </div>
-    <div class="bg-slate-950/40 p-5 rounded-2xl border border-rose-900/40 hover:border-rose-500/30 bg-gradient-to-br from-rose-950/10 to-transparent p-5 rounded-2xl shadow-xl">
+    <div class="bg-slate-950/40 p-5 rounded-2xl border border-rose-900/40 hover:border-rose-500/30 bg-gradient-to-br from-rose-950/10 to-transparent shadow-xl">
         <p class="text-[10px] font-bold uppercase tracking-wider text-rose-400">Anonymous Corruption</p>
         <p class="text-2xl sm:text-3xl font-black text-rose-500 mt-1">{{ anonymous_corruption_count }}</p>
         <span class="text-[11px] text-rose-400/70 mt-1 block font-medium">⚠️ Identity protected</span>
@@ -40,9 +40,9 @@
 </div>
 
 <!-- 2. የግራፎች ክፍል (VISUAL ANALYTICS - CHART SECTION) -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- የሪፖርቶች አዝማሚያ (Line Chart - 2/3 width) -->
-    <div class="bg-slate-950/30 border border-slate-800/80 rounded-2xl p-5 lg:col-span-2 shadow-xl flex flex-col justify-between min-h-[320px]">
+    <div class="bg-slate-950/30 border border-slate-800/80 rounded-2xl p-5 lg:col-span-2 shadow-xl flex flex-col justify-between min-h-[340px]">
         <div class="mb-4">
             <h3 class="text-sm font-bold text-white uppercase tracking-wider">Weekly Report Trends</h3>
             <p class="text-xs text-slate-500">Monitoring incoming vs resolved complaints over the last 7 days</p>
@@ -53,7 +53,7 @@
     </div>
 
     <!-- የቅሬታዎች ስርጭት በመደብ (Doughnut Chart - 1/3 width) -->
-    <div class="bg-slate-950/30 border border-slate-800/80 rounded-2xl p-5 shadow-xl flex flex-col justify-between min-h-[320px]">
+    <div class="bg-slate-950/30 border border-slate-800/80 rounded-2xl p-5 shadow-xl flex flex-col justify-between min-h-[340px]">
         <div class="mb-4">
             <h3 class="text-sm font-bold text-white uppercase tracking-wider">Issues by Category</h3>
             <p class="text-xs text-slate-500">Distribution of public problems</p>
@@ -64,103 +64,9 @@
     </div>
 </div>
 
-<!-- 3. የታችኛው ክፍል፡ የቅርብ ጊዜ ሪፖርቶች እና ማስታወቂያ መልቀቂያ -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    
-    <!-- የቅርብ ጊዜ ሪፖርቶች ሰንጠረዥ (2/3 width) -->
-    <div class="bg-slate-950/30 border border-slate-800/80 rounded-2xl p-5 lg:col-span-2 space-y-4 shadow-xl">
-        <div class="flex items-center justify-between">
-            <div>
-                <h3 class="text-sm font-bold text-white uppercase tracking-wider">Urgent Incoming Reports</h3>
-                <p class="text-xs text-slate-500">Latest submissions awaiting immediate operational response</p>
-            </div>
-            <a href="#" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold underline">View All</a>
-        </div>
-        
-        <div class="overflow-x-auto rounded-xl border border-slate-800/60">
-            <table class="w-full text-left text-xs text-slate-300">
-                <thead class="bg-slate-950 text-slate-400 uppercase font-bold tracking-wider border-b border-slate-800">
-                    <tr>
-                        <th class="py-3 px-4">Citizen Name</th>
-                        <th class="py-3 px-4">Issue Category</th>
-                        <th class="py-3 px-4">Status</th>
-                        <th class="py-3 px-4 text-right">Action</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-800/40 bg-slate-900/20">
-                    {% for report in urgent_reports %}
-                    <tr class="hover:bg-slate-800/30 transition">
-                        <td class="py-3.5 px-4 font-semibold text-white">
-                            {% if report.is_anonymous %}
-                                <span class="text-rose-400 flex items-center gap-1.5 font-bold">
-                                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-                                    Anonymous Citizen
-                                </span>
-                            {% else %}
-                                {{ report.citizen_name }}  {# ወይም የዩዘሩን ሙሉ ስም መጥሪያ ፊልድ #}
-                            {% endif %}
-                        </td>
-                        <td class="py-3.5 px-4">{{ report.category }}</td>
-                        <td class="py-3.5 px-4">
-                            {% if report.status == 'Pending' or report.status == 'pending' %}
-                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">Pending</span>
-                            {% elif report.status == 'In Progress' or report.status == 'progress' %}
-                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">In Progress</span>
-                            {% elif report.status == 'Critical' %}
-                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">Critical</span>
-                            {% else %}
-                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">{{ report.status }}</span>
-                            {% endif %}
-                        </td>
-                        <td class="py-3.5 px-4 text-right">
-                            <a href="#" class="inline-block px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition shadow-sm">Manage</a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" class="py-6 text-center text-slate-500 font-medium">No recent reports found today.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- አዲስ ማስታወቂያ መልቀቂያ (1/3 width) -->
-    <div class="bg-slate-950/30 border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
-        <div>
-            <h3 class="text-sm font-bold text-white uppercase tracking-wider">Publish Bulletin</h3>
-            <p class="text-xs text-slate-500">Broadcast important info to all resident dashboards</p>
-        </div>
-        <form method="POST" action="#" class="space-y-4.5"> {# ፎርም ታግ ጨምሬበታለሁ #}
-            {% csrf_token %}
-            <div>
-                <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Notice Title</label>
-                <input type="text" name="title" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs text-slate-200 focus:outline-none transition" placeholder="e.g., Scheduled Water Maintenance" required>
-            </div>
-            <div>
-                <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Notice Priority</label>
-                <select name="priority" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs text-slate-200 focus:outline-none transition cursor-pointer">
-                    <option value="general" selected>General Information</option>
-                    <option value="important">Important (Yellow Badge)</option>
-                    <option value="urgent">Urgent Announcement (Red Alert)</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Detailed Message</label>
-                <textarea name="message" rows="4" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs text-slate-200 focus:outline-none transition resize-none" placeholder="Write message to citizens..." required></textarea>
-            </div>
-            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider transition shadow-lg">
-                Broadcast Notice
-            </button>
-        </form>
-    </div>
-</div>
-
-<!-- 4. የግራፍ ስክሪፕቶች (CHART.JS INTEGRATION WITH DJANGO DATA) -->
+<!-- 3. የግራፍ ስክሪፕቶች (CHART.JS INTEGRATION WITH DJANGO DATA) -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // ከጃንጎ የተላኩትን የጄሰን መረጃዎች ወደ ጃቫስክሪፕት ተለዋዋጭነት መቀየር
     const daysLabels = {{ days_labels|safe }};
     const incomingTrends = {{ incoming_trends|safe }};
     const resolvedTrends = {{ resolved_trends|safe }};
@@ -178,7 +84,7 @@
                 {
                     label: 'Incoming',
                     data: incomingTrends,
-                    borderColor: '#f59e0b', // Amber
+                    borderColor: '#f59e0b',
                     backgroundColor: 'rgba(245, 158, 11, 0.05)',
                     tension: 0.3,
                     fill: true
@@ -186,7 +92,7 @@
                 {
                     label: 'Resolved',
                     data: resolvedTrends,
-                    borderColor: '#10b981', // Emerald
+                    borderColor: '#10b981',
                     backgroundColor: 'rgba(16, 185, 129, 0.05)',
                     tension: 0.3,
                     fill: true
@@ -214,9 +120,9 @@
             labels: categoryLabels,
             datasets: [{
                 data: categoryCounts,
-                backgroundColor: ['#3b82f6', '#f59e0b', '#6366f1', '#f43f5e', '#ec4899', '#14b8a6'], // ቀለሞቹን ማብዛት ይቻላል
+                backgroundColor: ['#3b82f6', '#f59e0b', '#6366f1', '#f43f5e', '#ec4899', '#14b8a6'],
                 borderWidth: 2,
-                borderColor: '#0f172a' // Slate 900
+                borderColor: '#0f172a'
             }]
         },
         options: {

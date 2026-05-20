@@ -36,13 +36,13 @@
         <!-- 2. ለትልቅ ስክሪን የሚሆን የጎን ማውጫ (DESKTOP SIDEBAR) -->
         <aside class="hidden md:flex flex-col w-64 bg-slate-950 border-r border-slate-800/60 p-4 space-y-2 sticky top-16 h-[calc(100vh-4rem)]">
             <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-3 mb-2">Navigation</p>
-            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-indigo-400 bg-indigo-950/40 border border-indigo-900/40 transition">
+            <a href="{% url 'admin_dashboard' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-indigo-400 bg-indigo-950/40 border border-indigo-900/40 transition">
                 <span>Dashboard Home</span>
             </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
+            <a href="{% url 'manage_reports' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
                 <span>Manage Reports</span>
             </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
+            <a href="{% url 'manage_users' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
                 <span>Manage Users</span>
             </a>
         </aside>
