@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Resident Portal - Becho Bore Kebele{% endblock %}</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- 1. DASHBOARD NAVBAR -->
+    <nav class="bg-slate-950 border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                
+                <!-- Left: Logo & Desktop Navigation -->
+                <div class="flex items-center gap-8">
+                    <span class="text-xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500">
+                        RESIDENT PORTAL
+                    </span>
+                    <!-- Desktop Links (የበራው ሊንክ በ block active_link በኩል ይወሰናል) -->
+                    <div class="hidden md:flex items-center space-x-1">
+                        {% block desktop_nav %}
+                        <a href="{% url 'resident_dashboard' %}" class="px-3 py-2 rounded-xl text-sm font-semibold {% if active_page == 'dashboard' %}bg-slate-800 text-emerald-400 border border-slate-700/50{% else %}text-slate-400 hover:text-white hover:bg-slate-900 transition{% endif %}">Dashboard Home</a>
+                        <a href="{% url 'report_issue' %}" class="px-3 py-2 rounded-xl text-sm font-semibold {% if active_page == 'report_issue' %}bg-slate-800 text-emerald-400 border border-slate-700/50{% else %}text-slate-400 hover:text-white hover:bg-slate-900 transition{% endif %}">Report an Issue</a>
+                        <a href="{% url 'my_reports' %}" class="px-3 py-2 rounded-xl text-sm font-semibold {% if active_page == 'my_reports' %}bg-slate-800 text-emerald-400 border border-slate-700/50{% else %}text-slate-400 hover:text-white hover:bg-slate-900 transition{% endif %}">My Reports</a>
+                        {% endblock %}
+                    </div>
+                </div>
+
+                <!-- Right: Welcome & Sign Out (Desktop) -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <span class="text-sm text-slate-400">Welcome, <strong class="text-white">{{ user.username }}</strong></span>
+                    <a href="{% url 'sign_out' %}" class="text-xs bg-slate-800 hover:bg-rose-950/40 hover:text-rose-400 hover:border-rose-900/50 text-slate-300 px-4 py-2 rounded-xl border border-slate-700 transition font-bold">
+                        Sign Out
+                    </a>
+                </div>
+
+                <!-- Mobile Hamburger Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobileMenuBtn" onclick="toggleMobileMenu()" class="text-slate-400 hover:text-white focus:outline-none p-2 rounded-lg bg-slate-900 border border-slate-800">
+                        <svg id="menuIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-slate-950 border-b border-slate-800 px-4 pt-2 pb-4 space-y-2">
+            <div class="p-2 border-b border-slate-800 mb-2">
+                <p class="text-xs text-slate-500">Signed in as</p>
+                <p class="text-sm font-bold text-white">{{ user.username }}</p>
+            </div>
+            <a href="{% url 'resident_dashboard' %}" class="block px-3 py-2.5 rounded-xl text-sm font-medium {% if active_page == 'dashboard' %}bg-slate-800 text-emerald-400{% else %}text-slate-400 hover:text-white hover:bg-slate-900{% endif %}">Dashboard Home</a>
+            <a href="{% url 'report_issue' %}" class="block px-3 py-2.5 rounded-xl text-sm font-medium {% if active_page == 'report_issue' %}bg-slate-800 text-emerald-400{% else %}text-slate-400 hover:text-white hover:bg-slate-900{% endif %}">Report an Issue</a>
+            <a href="{% url 'my_reports' %}" class="block px-3 py-2.5 rounded-xl text-sm font-medium {% if active_page == 'my_reports' %}bg-slate-800 text-emerald-400{% else %}text-slate-400 hover:text-white hover:bg-slate-900{% endif %}">My Reports</a>
+            <div class="pt-2 border-t border-slate-800 mt-2">
+                <a href="{% url 'sign_out' %}" class="block w-full text-center px-3 py-2.5 rounded-xl text-sm font-bold bg-rose-950/20 text-rose-400 border border-rose-900/30">
+                    Sign Out
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Django Messages (Alerts) - እዚህ ጋር ውብ የሆነውን የአሮጌውን ዲዛይን ወደ አዲሱ አዘምነነዋል -->
+    {% if messages %}
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 w-full">
+            {% for message in messages %}
+                <div class="p-4 rounded-xl border {% if message.tags == 'success' %} bg-emerald-950/30 border-emerald-500/40 text-emerald-400 {% else %} bg-rose-950/30 border-rose-500/40 text-rose-400 {% endif %} text-sm shadow-lg flex items-center gap-3" role="alert">
+                    <span class="w-2 h-2 rounded-full {% if message.tags == 'success' %} bg-emerald-400 {% else %} bg-rose-400 {% endif %} shrink-0"></span>
+                    <p>{{ message|safe }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- 2. MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full">
+        {% block content %}
+        <!-- እያንዳንዱ ገጽ የራሱን መረጃ እዚህ ውስጥ ይከታል -->
+        {% endblock %}
+    </main>
+
+    <!-- 3. FOOTER SECTION -->
+    <footer class="bg-slate-950 border-t border-slate-800/60 py-6 w-full">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+            <p>&copy; 2026 Becho Bore Kebele Portal. All rights reserved.</p>
+            <p class="flex items-center gap-1.5 text-slate-400">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+                Secure Citizen Session
+            </p>
+        </div>
+    </footer>
+
+    <!-- 4. JAVASCRIPT FOR MOBILE MENU TOGGLE -->
+    <script>
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuIcon = document.getElementById('menuIcon');
+            
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+                menuIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>`;
+            } else {
+                mobileMenu.classList.add('hidden');
+                menuIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>`;
+            }
+        }
+    </script>
+</body>
+</html>

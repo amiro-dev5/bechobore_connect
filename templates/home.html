@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Becho Bore Kebele - Citizen Issue Reporting System</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        .hero-bg {
+            background-image: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), url('/static/images/kebele_hero.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans antialiased">
+
+    <!-- NAVIGATION BAR -->
+    <nav class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0">
+                    <span class="text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500">
+                        BECHO BORE KEBELE
+                    </span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-center space-x-8">
+                        <a href="#" class="text-emerald-400 font-semibold border-b-2 border-emerald-400 pb-1">Home</a>
+                        <button onclick="showAuthModal()" class="text-slate-300 hover:text-emerald-400 font-medium transition duration-300">Report Issue</button>
+                        <a href="{% url 'auth_page' %}" class="text-slate-300 hover:text-emerald-400 font-medium transition duration-300">Sign In</a>
+                        <a href="{% url 'auth_page' %}" class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-lg shadow-emerald-950/50 hover:opacity-90 transition duration-300">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- BIG HERO SECTION -->
+    <header class="hero-bg min-h-[85vh] flex items-center justify-center text-center px-4 relative overflow-hidden">
+        <div class="max-w-4xl mx-auto space-y-8 relative z-10">
+            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm font-semibold tracking-wide">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                Official Citizen Platform
+            </span>
+            <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
+                Empowering Our Community For a <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Better Tomorrow</span>
+            </h1>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+                <button onclick="showAuthModal()" class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl shadow-emerald-950/40 hover:scale-[1.02] active:scale-[0.98] transition duration-300">
+                    Report an Issue Now
+                </button>
+                <a href="#objectives" class="bg-slate-800/80 hover:bg-slate-800 text-white border border-slate-700 px-8 py-4 rounded-xl font-bold text-lg backdrop-blur-sm transition duration-300">
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MOVING OBJECTIVE CARDS SECTION -->
+    <section id="objectives" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+            <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-white">Our Core Objectives</h2>
+            <p class="text-slate-400 text-lg">We are dedicated to fostering transparency, efficiency, and rapid response within our administration.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- CARD 1 -->
+            <div class="bg-slate-800/40 border border-slate-800 p-8 rounded-2xl shadow-xl hover:-translate-y-2 hover:border-emerald-500/30 hover:bg-slate-800/70 transition duration-300 group">
+                <div class="w-14 h-14 bg-emerald-500/10 text-emerald-400 flex items-center justify-center rounded-xl mb-6 group-hover:scale-110 transition duration-300">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3 group-hover:text-emerald-400 transition duration-200">Rapid Response</h3>
+                <p class="text-slate-400 leading-relaxed">Instantly route reported infrastructure or waste issues directly to designated kebele officers for immediate evaluation.</p>
+            </div>
+
+            <!-- CARD 2 -->
+            <div class="bg-slate-800/40 border border-slate-800 p-8 rounded-2xl shadow-xl hover:-translate-y-2 hover:border-emerald-500/30 hover:bg-slate-800/70 transition duration-300 group">
+                <div class="w-14 h-14 bg-emerald-500/10 text-emerald-400 flex items-center justify-center rounded-xl mb-6 group-hover:scale-110 transition duration-300">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3 group-hover:text-emerald-400 transition duration-200">Total Transparency</h3>
+                <p class="text-slate-400 leading-relaxed">Track the exact state of your complaints from submission to resolution in real-time with comprehensive updates.</p>
+            </div>
+
+            <!-- CARD 3 -->
+            <div class="bg-slate-800/40 border border-slate-800 p-8 rounded-2xl shadow-xl hover:-translate-y-2 hover:border-emerald-500/30 hover:bg-slate-800/70 transition duration-300 group">
+                <div class="w-14 h-14 bg-emerald-500/10 text-emerald-400 flex items-center justify-center rounded-xl mb-6 group-hover:scale-110 transition duration-300">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3 group-hover:text-emerald-400 transition duration-200">Public Bulletins</h3>
+                <p class="text-slate-400 leading-relaxed">Stay fully informed with authorized updates, official announcements, and urgent notices released by the kebele directly.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- BEAUTIFUL POP-UP MODAL (ROUND 1 REQUIREMENT) -->
+    <div id="authModal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onclick="hideAuthModal()"></div>
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-md p-8 rounded-2xl shadow-2xl relative z-10 transform scale-95 transition duration-300 text-center space-y-6">
+            <div class="w-16 h-16 bg-amber-500/10 text-amber-400 flex items-center justify-center rounded-full mx-auto">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m0-6v2m0-6h.01M12 2a10 10 0 110 20 10 10 0 010-20z"></path></svg>
+            </div>
+            <div class="space-y-2">
+                <h3 class="text-2xl font-bold text-white">Authentication Required</h3>
+                <p class="text-slate-400">To submit or view reported issues, you must first sign in to an authorized citizen or administrator account.</p>
+            </div>
+            <div class="flex flex-col gap-3 pt-2">
+                <a href="{% url 'auth_page' %}" class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 rounded-xl font-bold transition duration-300 hover:opacity-90">Sign In to Your Account</a>
+                <button onclick="hideAuthModal()" class="text-slate-400 hover:text-white font-medium text-sm transition duration-300">Close Window</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT FOR MODAL CONTROLS -->
+    <script>
+        function showAuthModal() {
+            const modal = document.getElementById('authModal');
+            modal.classList.remove('hidden');
+        }
+        function hideAuthModal() {
+            const modal = document.getElementById('authModal');
+            modal.classList.add('hidden');
+        }
+    </script>
+    <!-- BEAUTIFUL FOOTER -->
+    <footer class="bg-slate-950 border-t border-slate-800/80 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center border-b border-slate-800/50 pb-8">
+                <!-- Brand Column -->
+                <div class="text-center md:text-left space-y-2">
+                    <span class="text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500">
+                        BECHO BORE KEBELE
+                    </span>
+                    <p class="text-xs text-slate-500">Official Citizen Issue Reporting & Community Engagement System.</p>
+                </div>
+                
+                <!-- Quick Links Column -->
+                <div class="flex justify-center space-x-6 text-sm">
+                    <a href="#" class="text-slate-400 hover:text-emerald-400 transition duration-300">Privacy Policy</a>
+                    <a href="#" class="text-slate-400 hover:text-emerald-400 transition duration-300">Terms of Service</a>
+                    <a href="#" class="text-slate-400 hover:text-emerald-400 transition duration-300">Support</a>
+                </div>
+
+                <!-- Admin Quick Link -->
+                <div class="text-center md:text-right">
+                    <span class="text-xs text-slate-500 bg-slate-900 px-3 py-1.5 rounded-md border border-slate-800">
+                        System Status: <span class="text-emerald-400 font-medium">Online</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Bottom Copyright Section -->
+            <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+                <p>&copy; 2026 Becho Bore Kebele. All rights reserved.</p>
+                <p class="font-light">Designed for secure and transparent local administration.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

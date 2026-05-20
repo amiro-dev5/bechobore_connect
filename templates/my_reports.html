@@ -1,0 +1,130 @@
+{% extends 'resident_base.html' %}
+
+{% block title %}My Reports - Becho Bore Kebele{% endblock %}
+
+{% block content %}
+<!-- MAIN CONTENT AREA -->
+<div class="space-y-8 w-full">
+    
+    <!-- HEADER PROFILE / TITLE -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-slate-800 to-slate-800/40 p-6 sm:p-8 rounded-2xl border border-slate-800/80 shadow-xl">
+        <div>
+            <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">My Submitted Reports</h1>
+            <p class="text-slate-400 text-sm mt-1">Track the processing status, updates, and feedback on all your logged infrastructure complaints.</p>
+        </div>
+        <div>
+            <a href="{% url 'report_issue' %}" class="inline-flex items-center justify-center bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-white font-bold py-2.5 px-5 rounded-xl shadow-lg transition text-sm whitespace-nowrap">
+                + Report New Issue
+            </a>
+        </div>
+    </div>
+
+    <!-- REPORTS CONTAINER -->
+    <div class="bg-slate-950/40 border border-slate-800/80 rounded-2xl overflow-hidden shadow-2xl">
+        
+        {% if reports %}
+            <!-- 🖥️ DESKTOP TABLE VIEW (Hidden on Mobile) -->
+            <div class="hidden md:block overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-950/80 border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider font-semibold">
+                            <th class="px-6 py-4">Issue Details</th>
+                            <th class="px-6 py-4">Category</th>
+                            <th class="px-6 py-4">Date Logged</th>
+                            <th class="px-6 py-4">Status</th>
+                            <th class="px-6 py-4 text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60 text-sm">
+                        {% for report in reports %}
+                            <tr class="hover:bg-slate-900/40 transition">
+                                <td class="px-6 py-4">
+                                    <div class="font-bold text-white max-w-xs truncate">
+                                        {{ report.title|default:"Ticket" }} #BC-{{ report.id }}
+                                    </div>
+                                    <div class="text-xs text-slate-400 mt-0.5 max-w-xs truncate">
+                                        {{ report.description }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-800 border border-slate-700 text-slate-300">
+                                        {{ report.get_issue_type_display|default:report.issue_type|title }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-slate-400 text-xs">
+                                    {{ report.created_at|date:"M d, Y"|default:"Recently" }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {% if report.status == 'in_progress' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-bold rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">In Progress</span>
+                                    {% elif report.status == 'resolved' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-bold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Resolved</span>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-bold rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <a href="#" class="text-xs font-bold text-teal-400 hover:text-teal-300 transition">View &rarr;</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 📱 MOBILE CARD VIEW (Hidden on Desktop) -->
+            <div class="block md:hidden p-4 space-y-4">
+                {% for report in reports %}
+                    <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 space-y-3 shadow-md">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <h4 class="font-bold text-white text-base">
+                                    {{ report.title|default:"Ticket" }} #BC-{{ report.id }}
+                                </h4>
+                                <p class="text-xs text-slate-400 mt-1 line-clamp-2">{{ report.description }}</p>
+                            </div>
+                            {% if report.status == 'in_progress' %}
+                                <span class="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 whitespace-nowrap">In Progress</span>
+                            {% elif report.status == 'resolved' %}
+                                <span class="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 whitespace-nowrap">Resolved</span>
+                            {% else %}
+                                <span class="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 whitespace-nowrap">Pending</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800/60">
+                            <div>
+                                <span class="bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-[11px] text-slate-300 mr-2">
+                                    {{ report.get_issue_type_display|default:report.issue_type|title }}
+                                </span>
+                                <span>{{ report.created_at|date:"M d"|default:"Now" }}</span>
+                            </div>
+                            <a href="#" class="text-xs font-bold text-teal-400 hover:underline">View &rarr;</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        
+        {% else %}
+            <!-- EMPTY STATE -->
+            <div class="p-12 text-center max-w-sm mx-auto space-y-4">
+                <div class="mx-auto w-12 h-12 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center text-slate-500">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-white">No reports found</h3>
+                    <p class="text-xs text-slate-400 mt-1">You haven't submitted any complaints or infrastructure issues yet.</p>
+                </div>
+                <div class="pt-2">
+                    <a href="{% url 'report_issue' %}" class="inline-block w-full bg-slate-900 border border-slate-800 hover:bg-slate-800 text-white text-xs font-bold py-2.5 px-4 rounded-xl transition">
+                        File Your First Report
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
