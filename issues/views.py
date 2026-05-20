@@ -3,6 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import CustomUser,IssueReport
+import json
+from django.utils import timezone
+from datetime import timedelta
+from django.db.models import Count
 
 def home(request):
     # ተጠቃሚው ቀድሞ Log In ካደረገ በቀጥታ ወደ ሚናው ዳሽቦርድ ይመራዋል
@@ -74,10 +78,66 @@ def resident_dashboard(request):
 
 @login_required
 def admin_dashboard(request):
-    # አድሚን ካልሆነ ወደ ነዋሪ ዳሽቦርድ ይመልሰዋል
     if request.user.role != 'kebele_admin':
         return redirect('resident_dashboard')
-    return render(request, 'admin_dashboard.html')
+
+    today = timezone.now().date()
+    start_of_week = today - timedelta(days=6)  # ላለፉት 7 ቀናት
+
+    # 📊 ሀ) የትንታኔ ካውንተሮች (ከ IssueReport ሞዴልህ ጋር የተጣጣሙ)
+    today_reports_count = IssueReport.objects.filter(created_at__date=today).count()
+    active_progress_count = IssueReport.objects.filter(is_resolved=False).count() 
+    resolved_this_week_count = IssueReport.objects.filter(
+        is_resolved=True, 
+        created_at__date__gte=today - timedelta(days=7) # እዚህ ጋር updated_at ስለሌለ በcreated_at ተተክቷል
+    ).count()
+    anonymous_corruption_count = IssueReport.objects.filter(
+        is_anonymous=True, 
+        issue_type='corruption'
+    ).count()
+
+    # 📋 ለ) የቅርብ ጊዜ ሪፖርቶች ሰንጠረዥ (Urgent Incoming Reports)
+    urgent_reports = IssueReport.objects.all().order_by('-created_at')[:5]
+
+    # 🍩 ሐ) የቅሬታዎች ስርጭት በመደብ (Doughnut Chart Data)
+    # በ issue_type ግሩፕ አድርጎ መቁጠር
+    category_data = IssueReport.objects.values('issue_type').annotate(count=Count('id'))
+    
+    category_labels = [item['issue_type'].upper() for item in category_data]
+    category_counts = [item['count'] for item in category_data]
+
+    # 📈 መ) የሪፖርቶች ሳምንታዊ አዝማሚያ (Line Chart Data)
+    days_labels = []
+    incoming_trends = []
+    resolved_trends = []
+
+    for i in range(7):
+        current_date = start_of_week + timedelta(days=i)
+        days_labels.append(current_date.strftime('%a'))
+        
+        day_incoming = IssueReport.objects.filter(created_at__date=current_date).count()
+        # ማስታወሻ፡ በሞዴልህ ላይ updated_at ስለሌለ፣ ለአዝማሚያው በዚያ ቀን የገቡትንና የተፈቱትን በcreated_at እና በis_resolved እንለያለን
+        day_resolved = IssueReport.objects.filter(created_at__date=current_date, is_resolved=True).count()
+        
+        incoming_trends.append(day_incoming)
+        resolved_trends.append(day_resolved)
+
+    context = {
+        'today_reports_count': today_reports_count,
+        'active_progress_count': active_progress_count,
+        'resolved_this_week_count': resolved_this_week_count,
+        'anonymous_corruption_count': anonymous_corruption_count,
+        'urgent_reports': urgent_reports,
+        
+        # ለፍሮንት-አንድ ቻርት (Chart.js) እንዲመች ወደ ጄሰን የተቀየሩ
+        'category_labels': json.dumps(category_labels),
+        'category_counts': json.dumps(category_counts),
+        'days_labels': json.dumps(days_labels),
+        'incoming_trends': json.dumps(incoming_trends),
+        'resolved_trends': json.dumps(resolved_trends),
+    }
+    
+    return render(request, 'admin_dashboard.html', context)
 @login_required
 def report_issue(request):
     if request.user.role != 'resident':
