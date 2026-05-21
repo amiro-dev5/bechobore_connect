@@ -1,10 +1,8 @@
-<!{% extends 'resident_base.html' %}
+{% extends 'resident_base.html' %}
 
 {% block title %}Report an Issue - Becho Bore Kebele{% endblock %}
 
 {% block content %}
-
-   
 
     <!-- 2. MAIN FORM AREA -->
     <main class="max-w-3xl mx-auto px-4 sm:px-6 py-10 flex-grow w-full">
@@ -63,11 +61,11 @@
             <div id="personalInfoSection" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-2">
                     <label for="full_name" class="block text-xs font-bold uppercase tracking-wider text-slate-400">Full Name</label>
-                    <input type="text" id="full_name" name="full_name" placeholder="John Doe" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-emerald-500 transition">
+                    <input type="text" id="full_name" name="full_name" value="{{ request.user.username }}" readonly class="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-400 focus:outline-none cursor-not-allowed transition">
                 </div>
                 <div class="space-y-2">
                     <label for="phone" class="block text-xs font-bold uppercase tracking-wider text-slate-400">Phone Number</label>
-                    <input type="text" id="phone" name="phone" placeholder="+251 9..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-emerald-500 transition">
+                    <input type="text" id="phone" name="phone" value="{{ request.user.phone_number }}" readonly class="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-400 focus:outline-none cursor-not-allowed transition">
                 </div>
             </div>
 
@@ -103,20 +101,24 @@
 
     <!-- 4. DYNAMIC INTERACTION JAVASCRIPT -->
     <script>
+       
+        const authName = "{{ request.user.username }}";
+        const authPhone = "{{ request.user.phone_number }}";
+
         function handleCategoryChange() {
             const issueType = document.getElementById('issue_type').value;
             const anonymousSection = document.getElementById('anonymousSection');
             const personalInfoSection = document.getElementById('personalInfoSection');
 
             if (issueType === 'corruption') {
-                // Show anonymous choice banner
                 anonymousSection.classList.remove('hidden');
-                // By default, 'Yes' is checked, so hide personal fields initially
                 toggleIdentityFields(true);
             } else {
-                // For other categories, hide identity banner and always show name/phone fields
                 anonymousSection.classList.add('hidden');
                 personalInfoSection.classList.remove('hidden');
+               
+                document.getElementById('full_name').value = authName;
+                document.getElementById('phone').value = authPhone;
             }
         }
 
@@ -127,11 +129,13 @@
 
             if (isAnonymous) {
                 personalInfoSection.classList.add('hidden');
-                // Clear out inputs so no data accidentally leaks to database
                 nameInput.value = '';
                 phoneInput.value = '';
             } else {
                 personalInfoSection.classList.remove('hidden');
+                
+                nameInput.value = authName;
+                phoneInput.value = authPhone;
             }
         }
     </script>

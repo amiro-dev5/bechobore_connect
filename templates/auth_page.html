@@ -77,19 +77,23 @@
                 {% csrf_token %}
                 <input type="hidden" name="action" value="register">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1.5">Username</label>
-                    <input type="text" name="username" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 text-white" placeholder="Choose username...">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1.5">Username </label>
+                    <input type="text" name="username" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 text-white" placeholder="Choose unique username...">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1.5">Email Address</label>
-                    <input type="email" name="email" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 text-white" placeholder="name@example.com">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1.5">Phone Number</label>
+                    <input type="text" name="phone_number" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 text-white" placeholder="e.g. 0912345678">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1.5">Password (Auto-Hashed)</label>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1.5">FAN </label>
+                    <input type="text" name="fan" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 text-white" placeholder="Enter unique FAN...">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1.5">Password</label>
                     <input type="password" name="password" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 text-white" placeholder="••••••••">
                 </div>
                 <button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-emerald-600 hover:opacity-90 text-white font-bold py-3.5 rounded-xl text-sm transition shadow-lg shadow-emerald-950/40">
-                    Create Secure Account
+                    Submit Registration
                 </button>
             </form>
 
@@ -103,7 +107,6 @@
 
     <!-- INTERACTION JAVASCRIPT -->
     <script>
-        // Check URL parameters on load to switch tabs smoothly
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const mode = urlParams.get('mode');

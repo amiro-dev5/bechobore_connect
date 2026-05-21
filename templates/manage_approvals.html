@@ -1,0 +1,131 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Manage FAN Approvals - Becho Bore Connect{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto space-y-12">
+    
+    <!-- 1. PENDING APPROVALS SECTION -->
+    <div class="space-y-6">
+        <div>
+            <h1 class="text-2xl font-bold text-white tracking-tight">Pending FAN Approvals</h1>
+            <p class="text-sm text-slate-400">Review and verify registration requests using unique citizen tokens before granting full access.</p>
+        </div>
+
+       
+        {% if messages %}
+            <div class="space-y-2">
+                {% for message in messages %}
+                    <div class="p-4 rounded-xl text-xs font-medium border bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+            {% if pending_users %}
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse text-left text-sm">
+                        <thead class="bg-slate-900/60 text-slate-400 text-xs font-semibold uppercase tracking-wider border-b border-slate-800">
+                            <tr>
+                                <th class="px-6 py-4">Username</th>
+                                <th class="px-6 py-4">Phone Number</th>
+                                <th class="px-6 py-4">FAN (Unique Token)</th>
+                                <th class="px-6 py-4 text-right">System Action Logs</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60">
+                            {% for user in pending_users %}
+                                <tr class="hover:bg-slate-900/40 transition">
+                                    <td class="px-6 py-4 font-medium text-white">{{ user.username }}</td>
+                                    <td class="px-6 py-4 text-slate-300">{{ user.phone_number }}</td>
+                                    <td class="px-6 py-4 font-mono text-xs text-indigo-400 bg-indigo-950/20 px-2 py-1 rounded border border-indigo-900/30 w-max">{{ user.fan }}</td>
+                                    <td class="px-6 py-4 text-right">
+                                        <div class="inline-flex gap-2">
+                                            <!-- የማጽደቂያ ፎርም (Approve) -->
+                                            <form method="POST" action="" class="inline">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                                <input type="hidden" name="action" value="approve">
+                                                <button type="submit" class="bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-emerald-500/20 cursor-pointer">
+                                                    Approve Access
+                                                </button>
+                                            </form>
+                                            <!-- የመሰረዣ ፎርም (Reject) -->
+                                            <form method="POST" action="" class="inline">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                                <input type="hidden" name="action" value="reject">
+                                                <button type="submit" class="bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-rose-500/20 cursor-pointer">
+                                                    Reject
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+
+                <div class="p-12 text-center space-y-2">
+                    <svg class="w-12 h-12 text-slate-700 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <p class="text-sm text-slate-400 font-medium">No pending registration requests found.</p>
+                    <p class="text-xs text-slate-500">All registered system users are currently verified and active in the kebele registry.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    
+    <div class="space-y-6">
+        <div class="border-t border-slate-800/60 pt-8">
+            <h2 class="text-xl font-bold text-white tracking-tight">System Verification & Approval History</h2>
+            <p class="text-sm text-slate-400">A historical log of verified citizen profiles that currently hold active portal access tokens.</p>
+        </div>
+
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+            {% if approved_users %}
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse text-left text-sm">
+                        <thead class="bg-slate-900/60 text-slate-400 text-xs font-semibold uppercase tracking-wider border-b border-slate-800">
+                            <tr>
+                                <th class="px-6 py-4">Username</th>
+                                <th class="px-6 py-4">Phone Number</th>
+                                <th class="px-6 py-4">FAN (Verified Token)</th>
+                                <th class="px-6 py-4 text-right">Access Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60">
+                            {% for user in approved_users %}
+                                <tr class="hover:bg-slate-900/40 transition text-slate-300">
+                                    <td class="px-6 py-4 font-medium text-slate-200">{{ user.username }}</td>
+                                    <td class="px-6 py-4 text-slate-400">{{ user.phone_number }}</td>
+                                    <td class="px-6 py-4 font-mono text-xs text-slate-500">{{ user.fan }}</td>
+                                    <td class="px-6 py-4 text-right">
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                            Verified Active
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="p-12 text-center space-y-2">
+                    <p class="text-sm text-slate-500 font-medium">No historical logs found.</p>
+                    <p class="text-xs text-slate-600">Once you approve registration requests, they will populate in this audit history list.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

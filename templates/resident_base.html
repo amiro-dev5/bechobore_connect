@@ -18,7 +18,7 @@
                     <span class="text-xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500">
                         RESIDENT PORTAL
                     </span>
-                    <!-- Desktop Links (የበራው ሊንክ በ block active_link በኩል ይወሰናል) -->
+                   
                     <div class="hidden md:flex items-center space-x-1">
                         {% block desktop_nav %}
                         <a href="{% url 'resident_dashboard' %}" class="px-3 py-2 rounded-xl text-sm font-semibold {% if active_page == 'dashboard' %}bg-slate-800 text-emerald-400 border border-slate-700/50{% else %}text-slate-400 hover:text-white hover:bg-slate-900 transition{% endif %}">Dashboard Home</a>
@@ -65,7 +65,7 @@
         </div>
     </nav>
 
-    <!-- Django Messages (Alerts) - እዚህ ጋር ውብ የሆነውን የአሮጌውን ዲዛይን ወደ አዲሱ አዘምነነዋል -->
+    
     {% if messages %}
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 w-full">
             {% for message in messages %}
@@ -80,7 +80,7 @@
     <!-- 2. MAIN CONTENT AREA -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full">
         {% block content %}
-        <!-- እያንዳንዱ ገጽ የራሱን መረጃ እዚህ ውስጥ ይከታል -->
+      
         {% endblock %}
     </main>
 

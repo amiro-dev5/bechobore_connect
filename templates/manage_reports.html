@@ -61,11 +61,12 @@
             <div class="space-y-2">
                 <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">Attached Evidence</p>
                 {% if report.evidence_image %}
-                <div class="relative group overflow-hidden rounded-xl border border-slate-800 max-h-40 bg-slate-900 flex items-center justify-center">
+
+                <div onclick="openImageModal('{{ report.evidence_image.url }}')" class="relative group overflow-hidden rounded-xl border border-slate-800 max-h-40 bg-slate-900 flex items-center justify-center cursor-pointer">
                     <img src="{{ report.evidence_image.url }}" alt="Evidence" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                    <a href="{{ report.evidence_image.url }}" target="_blank" class="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 flex items-center justify-center text-xs text-white font-semibold transition backdrop-blur-xs">
+                    <div class="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 flex items-center justify-center text-xs text-white font-semibold transition backdrop-blur-xs">
                         🔍 View Full Image
-                    </a>
+                    </div>
                 </div>
                 {% else %}
                 <div class="h-32 rounded-xl border border-dashed border-slate-800 flex flex-col items-center justify-center p-4 text-center text-slate-600">
@@ -102,7 +103,7 @@
                     <option value="unresolved" {% if not report.is_resolved %}selected{% endif %}>Seen / In Progress</option>
                     <option value="resolved" {% if report.is_resolved %}selected{% endif %}>Resolved</option>
                 </select>
-                <button type="submit" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl font-bold transition shadow-md cursor-pointer">
+                <button type="submit" class="text-xs bg-indigo-600 hover:bg-indigo-400 text-white px-4 py-2 rounded-xl font-bold transition shadow-md cursor-pointer">
                     Mark
                 </button>
             </form>
@@ -122,4 +123,45 @@
     </div>
     {% endfor %}
 </div>
+
+
+<div id="imageModal" class="fixed inset-0 z-50 hidden bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-300">
+    <!-- Close Area Button -->
+    <div onclick="closeImageModal()" class="absolute inset-0 cursor-zoom-out"></div>
+    
+    <!-- Modal Content -->
+    <div class="relative max-w-4xl max-h-[90vh] z-10 flex flex-col items-center">
+        <!-- Close Button Top Right -->
+        <button onclick="closeImageModal()" class="absolute -top-12 right-0 bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white p-2 rounded-full font-bold transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <!-- Dynamic Popup Image -->
+        <img id="modalImage" src="" alt="Evidence Large" class="rounded-2xl max-w-full max-h-[80vh] object-contain border border-slate-800/60 shadow-2xl">
+    </div>
+</div>
+
+<!-- JAVASCRIPT FOR THE POPUP INTERACTION -->
+<script>
+    function openImageModal(imageUrl) {
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        
+        modalImg.src = imageUrl;
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; 
+    }
+
+    function closeImageModal() {
+        const modal = document.getElementById('imageModal');
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto'; 
+    }
+
+  
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeImageModal();
+        }
+    });
+</script>
 {% endblock %}

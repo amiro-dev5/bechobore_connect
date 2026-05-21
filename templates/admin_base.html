@@ -9,23 +9,23 @@
 </head>
 <body class="bg-slate-900 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- 1. የላይኛው አሞሌ (TOP BAR) -->
+    
     <nav class="bg-slate-950 border-b border-indigo-900/40 sticky top-0 z-50 h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
         <div class="flex items-center gap-4">
-            <!-- ለስልክ ሜኑ መክፈቻ አዝራር (Hamburger Button) -->
+           
             <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
             </button>
-            <!-- አርማ (Logo) -->
+           
             <span class="text-lg font-black tracking-wider text-indigo-400 flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
                 BECHO BORE <span class="text-xs font-bold bg-indigo-950 px-2 py-1 rounded-md text-indigo-300 border border-indigo-800/60">ADMIN</span>
             </span>
         </div>
 
-        <!-- የኦፊሰሩ መገለጫ (Profile Info) -->
+        
         <div class="flex items-center space-x-4">
             <span class="text-xs text-slate-400 hidden sm:inline">Officer: <strong class="text-white">{{ user.username }}</strong></span>
             <a href="{% url 'sign_out' %}" class="text-xs bg-slate-900 hover:bg-rose-950/40 hover:text-rose-400 text-slate-300 px-3 py-2 rounded-xl border border-slate-800 transition font-medium">Sign Out</a>
@@ -33,11 +33,14 @@
     </nav>
 
     <div class="flex flex-1 relative">
-        <!-- 2. ለትልቅ ስክሪን የሚሆን የጎን ማውጫ (DESKTOP SIDEBAR) -->
+       
         <aside class="hidden md:flex flex-col w-64 bg-slate-950 border-r border-slate-800/60 p-4 space-y-2 sticky top-16 h-[calc(100vh-4rem)]">
             <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-3 mb-2">Navigation</p>
             <a href="{% url 'admin_dashboard' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-indigo-400 bg-indigo-950/40 border border-indigo-900/40 transition">
                 <span>Dashboard Home</span>
+            </a>
+            <a href="{% url 'manage_approvals' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
+                <span>FAN Approvals</span>
             </a>
             <a href="{% url 'manage_reports' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
                 <span>Manage Reports</span>
@@ -47,12 +50,12 @@
             </a>
         </aside>
 
-        <!-- 3. ለስልክ የሚሆን ተንቀሳቃሽ ማውጫ (MOBILE DRAWER) -->
+        
         <div id="mobileMenu" class="hidden fixed inset-0 z-40 flex md:hidden">
-            <!-- የጀርባ ማጨልመሪያ (Overlay) -->
+           
             <div onclick="toggleMobileMenu()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
             
-            <!-- የሜኑ መያዣ (Drawer Content) -->
+           
             <aside class="relative flex flex-col w-72 max-w-sm bg-slate-950 h-full p-5 space-y-3 shadow-2xl border-r border-slate-800">
                 <div class="flex items-center justify-between pb-4 border-b border-slate-800">
                     <span class="text-sm font-bold text-slate-400">Admin Menu</span>
@@ -65,6 +68,10 @@
                 <a href="{% url 'admin_dashboard' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-indigo-400 bg-indigo-950/40 border border-indigo-900/40">
                     Dashboard Home
                 </a>
+                
+                <a href="{% url 'manage_approvals' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-400 hover:text-white hover:bg-slate-900">
+                     FAN Approvals
+                </a>
                 <a href="{% url 'manage_reports' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-400 hover:text-white hover:bg-slate-900">
                     Manage Reports
                 </a>
@@ -74,21 +81,21 @@
             </aside>
         </div>
 
-        <!-- 4. ዋናው የይዘት ቦታ (MAIN CONTENT AREA) -->
+        
         <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
             {% block content %}
-            <!-- እያንዳንዱ ገጽ እዚህ ውስጥ ይተካል -->
+          
             {% endblock %}
         </main>
     </div>
 
-    <!-- 5. ቶገል ማድረጊያ ጃቫስክሪፕት -->
+   
     <script>
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
             if (menu.classList.contains('hidden')) {
                 menu.classList.remove('hidden');
-                document.body.style.overflow = 'hidden'; // ሜኑው ሲከፈት የጀርባው ገጽ እንዳይንቀሳቀስ
+                document.body.style.overflow = 'hidden'; 
             } else {
                 menu.classList.add('hidden');
                 document.body.style.overflow = 'auto';

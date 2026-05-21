@@ -120,3 +120,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 LOGIN_URL = 'home'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Media Files (User Uploaded Evidence Images)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
